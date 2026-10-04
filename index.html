@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Organization XP</title>
+  <meta name="description" content="Level up your Organization stat by logging real tasks.">
+  <meta name="theme-color" content="#12141c">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Org XP">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="icon-192.png">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <main class="wrap">
+    <!-- Stat card -->
+    <section class="card stat" aria-labelledby="stat-title">
+      <div class="stat-head">
+        <h1 id="stat-title" class="stat-name">Organization</h1>
+        <div class="stat-level">Lv <span id="level">1</span></div>
+      </div>
+      <div class="xpbar" role="progressbar" aria-label="Progress to next level" aria-valuemin="0" aria-valuemax="100" id="xpbar">
+        <div class="xpbar-fill" id="xpbar-fill"></div>
+      </div>
+      <div class="stat-sub">
+        <span><span id="xp-into">0</span> / <span id="xp-next">100</span> XP to next level</span>
+        <span><span id="xp-total">0</span> XP total</span>
+      </div>
+    </section>
+
+    <!-- Log form -->
+    <section class="card" aria-labelledby="log-title">
+      <h2 id="log-title">Log a task</h2>
+      <form id="log-form" autocomplete="off">
+        <label class="field">
+          <span>Task</span>
+          <select id="log-task" required></select>
+        </label>
+        <p id="no-tasks" class="hint" hidden>Add a task below to get started.</p>
+
+        <div class="field">
+          <label for="log-minutes">Minutes spent</label>
+          <div class="minutes-row">
+            <input id="log-minutes" type="number" inputmode="numeric" min="1" max="1440" step="1" value="10" required>
+            <div class="chips" id="minute-chips">
+              <button type="button" data-min="5">5</button>
+              <button type="button" data-min="10">10</button>
+              <button type="button" data-min="15">15</button>
+              <button type="button" data-min="30">30</button>
+              <button type="button" data-min="60">60</button>
+            </div>
+          </div>
+        </div>
+
+        <fieldset class="field">
+          <legend>Resistance this time <span class="hint-inline">(1 = effortless, 10 = huge struggle)</span></legend>
+          <div class="rating" id="rating"></div>
+        </fieldset>
+
+        <div class="preview" id="preview" aria-live="polite"></div>
+        <button type="submit" class="primary" id="log-submit">Log it</button>
+      </form>
+    </section>
+
+    <!-- Tasks -->
+    <section class="card" aria-labelledby="tasks-title">
+      <div class="section-head">
+        <h2 id="tasks-title">Tasks</h2>
+        <span class="hint-inline">Biggest boosts first</span>
+      </div>
+      <form id="add-task-form" class="add-task" autocomplete="off">
+        <input id="new-task" type="text" maxlength="80" placeholder="e.g. Clear inbox" aria-label="New task name" required>
+        <button type="submit">Add</button>
+      </form>
+      <ul class="task-list" id="task-list"></ul>
+    </section>
+
+    <!-- History -->
+    <section class="card" aria-labelledby="history-title">
+      <h2 id="history-title">Recent logs</h2>
+      <ul class="history" id="history"></ul>
+      <button type="button" class="link" id="history-more" hidden>Show more</button>
+    </section>
+
+    <!-- Settings -->
+    <details class="card settings">
+      <summary><h2>Settings &amp; data</h2></summary>
+      <form id="settings-form">
+        <label class="field">
+          <span>XP per minute</span>
+          <input type="number" name="xpPerMinute" min="0.1" step="0.1">
+        </label>
+        <label class="field">
+          <span>Max multiplier <span class="hint-inline">(hardest tasks; easiest get the reciprocal)</span></span>
+          <input type="number" name="maxMultiplier" min="1" max="20" step="0.5">
+        </label>
+        <label class="field">
+          <span>Score responsiveness <span class="hint-inline">(0–1; higher = latest rating counts more)</span></span>
+          <input type="number" name="smoothing" min="0.05" max="1" step="0.05">
+        </label>
+        <label class="field">
+          <span>Level step <span class="hint-inline">(XP from level L to L+1 = step × L)</span></span>
+          <input type="number" name="levelStep" min="10" step="10">
+        </label>
+        <p class="hint">Changing settings recalculates all past logs.</p>
+        <div class="row">
+          <button type="submit">Save settings</button>
+          <button type="button" id="settings-reset" class="ghost">Restore defaults</button>
+        </div>
+      </form>
+      <hr>
+      <p class="hint">Data is stored only in this browser. Export a backup now and then.</p>
+      <div class="row">
+        <button type="button" id="export">Export backup</button>
+        <label class="button ghost">Import backup<input type="file" id="import" accept="application/json,.json" hidden></label>
+        <button type="button" id="wipe" class="danger">Erase everything</button>
+      </div>
+    </details>
+
+    <footer class="foot">Organization XP · pilot</footer>
+  </main>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script src="logic.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
